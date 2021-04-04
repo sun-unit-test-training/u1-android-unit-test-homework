@@ -18,7 +18,7 @@ import org.koin.dsl.module
  * @param get() is a component given
  */
 val viewModelModule = module {
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel() }
     viewModel { ExerciseOneViewModel() }
     viewModel { ExerciseTwoViewModel() }
     viewModel { ExerciseThreeViewModel() }
