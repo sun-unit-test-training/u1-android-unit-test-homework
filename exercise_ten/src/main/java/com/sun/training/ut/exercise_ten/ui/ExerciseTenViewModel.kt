@@ -73,4 +73,10 @@ class ExerciseTenViewModel constructor(private val resources: Resources) : BaseV
             user.classType = memberType
         }
     }
+
+    fun updateMemberType(typeId: Int) {
+        user.value?.let { user ->
+            user.classType = typeId
+        }
+    }
 }
