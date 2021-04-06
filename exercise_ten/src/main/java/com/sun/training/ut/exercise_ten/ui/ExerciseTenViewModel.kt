@@ -19,15 +19,14 @@ class ExerciseTenViewModel constructor(private val resources: Resources) : BaseV
     val invoice = SingleLiveData<Invoice>()
     val subTotal = MutableLiveData<String>()
 
-    init {
-        user.value = User(
-            userId = 1,
-            userName = resources.getString(R.string.ex_10_user_name_default),
-            classType = MemberClassType.GOLD_CLASS
-        )
-    }
+//    init {
+//        user.value = User(
+//            userId = 1,
+//            userName = resources.getString(R.string.ex_10_user_name_default),
+//            classType = MemberClassType.GOLD_CLASS
+//        )
+//    }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun discountCalculation(subTotal: Double): Double {
         return user.value?.let { currentUser ->
             when {
