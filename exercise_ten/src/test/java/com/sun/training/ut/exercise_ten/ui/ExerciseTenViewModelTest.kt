@@ -3,6 +3,7 @@ package com.sun.training.ut.exercise_ten.ui
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.exercise_ten.R
+import com.sun.training.ut.exercise_ten.data.model.MemberClassType
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT
@@ -444,5 +445,404 @@ class ExerciseTenViewModelTest {
             Assert.assertEquals(false, invoice.value?.giftAccepted)
         }
     }
+
+    @Test
+    fun giftAccepted_amout5000Yen_returnTrue() {
+        with(exerciseTenViewModelTest) {
+            val subTotal = 5000.0
+            Assert.assertEquals(true, giftAccepted(subTotal = subTotal))
+        }
+    }
+
+    @Test
+    fun giftAccepted_amout10000Yen_returnTrue() {
+        with(exerciseTenViewModelTest) {
+            val subTotal = 10000.0
+            Assert.assertEquals(true, giftAccepted(subTotal = subTotal))
+        }
+    }
+
+    @Test
+    fun giftAccepted_amout8000Yen_returnFalse() {
+        with(exerciseTenViewModelTest) {
+            val subTotal = 8000.0
+            Assert.assertEquals(false, giftAccepted(subTotal = subTotal))
+        }
+    }
+
+    @Test
+    fun updateMemberClassType_typeBlack() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            Assert.assertEquals(
+                MemberClassType.BLACK_CLASS,
+                user.value?.classType
+            )
+        }
+    }
+
+    @Test
+    fun updateMemberClassType_typeSilver() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+            Assert.assertEquals(
+                MemberClassType.SILVER_CLASS,
+                user.value?.classType
+            )
+        }
+    }
+
+    @Test
+    fun updateMemberClassType_typeGold() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+            Assert.assertEquals(
+                MemberClassType.GOLD_CLASS,
+                user.value?.classType
+            )
+        }
+    }
+
+    @Test
+    fun updateMemberClassType_typeUnknow() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_unknown)
+            updateMemberClassType(type)
+            Assert.assertEquals(
+                MemberClassType.UNKNOWN_CLASS,
+                user.value?.classType
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_paymentMoreThan10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+
+            val subTotal = 11000.0
+
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_payment10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+
+            val subTotal = 10000.0
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_paymentAbove5000ToUnder10000Yen() {
+
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            val subTotal = 8000.0
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+
+    }
+
+    @Test
+    fun discountCalculation_classBlack_payment5000Yen() {
+
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            val subTotal = 5000.0
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_paymentAbove3000AndUnder5000Yen() {
+
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            val subTotal = 4000.0
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_payment3000Yen() {
+
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            val subTotal = 3000.0
+            Assert.assertEquals(
+                subTotal * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classBlack_paymentUnder3000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_black)
+            updateMemberClassType(type)
+            val subTotal = 2000.0
+            Assert.assertEquals(
+                subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_paymentMoreThan10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 11000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_payment10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 10000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_paymentAbove5000YenToUnder10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 8000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_payment5000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 5000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_paymentAbove3000ToUnder5000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 4000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_payment3000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 3000.0
+
+            Assert.assertEquals(
+                subTotal * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classGold_paymentUnder3000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_gold)
+            updateMemberClassType(type)
+
+            val subTotal = 2000.0
+
+            Assert.assertEquals(
+                subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_paymentMoreThan10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 11000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_payment10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 10000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_paymentAbove5000ToUnder10000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 8000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_payment5000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 5000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+
+    @Test
+    fun discountCalculation_classSilver_paymentAbove3000YenToUnder5000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 4000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_payment3000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_silver)
+            updateMemberClassType(type)
+
+            val subTotal = 3000.0
+
+            Assert.assertEquals(
+                subTotal * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+    @Test
+    fun discountCalculation_classSilver_paymentUnder3000Yen() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_unknown)
+            updateMemberClassType(type)
+
+            val subTotal = 2000.0
+
+            Assert.assertEquals(
+                subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
+
+    @Test
+    fun discountCalculation_classUnknow_paymentAny() {
+        with(exerciseTenViewModelTest) {
+            val type = resourceTest.getString(R.string.ex_10_class_type_unknown)
+            updateMemberClassType(type)
+
+            val subTotal = 10000.0
+
+            Assert.assertEquals(
+                subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                discountCalculation(subTotal), 0.0
+            )
+        }
+    }
+
 
 }
