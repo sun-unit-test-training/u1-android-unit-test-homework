@@ -1,6 +1,5 @@
 package com.sun.training.ut
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.exercise_ten.R
@@ -9,7 +8,6 @@ import com.sun.training.ut.exercise_ten.data.model.MemberClassType.Companion.BLA
 import com.sun.training.ut.exercise_ten.data.model.MemberClassType.Companion.GOLD_CLASS
 import com.sun.training.ut.exercise_ten.data.model.MemberClassType.Companion.SILVER_CLASS
 import com.sun.training.ut.exercise_ten.data.model.MemberClassType.Companion.UNKNOWN_CLASS
-import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT
 import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness.BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT
@@ -43,9 +41,6 @@ class ExerciseOneViewModelTest {
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var mockContext: Context
-
-    @Mock
     private lateinit var mockResources: Resources
 
     private lateinit var viewModel: ExerciseTenViewModel
@@ -61,7 +56,6 @@ class ExerciseOneViewModelTest {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        `when`(mockContext.resources).thenReturn(mockResources)
         `when`(mockResources.getString(R.string.ex_10_user_name_default)).thenReturn("Mai Quốc Đạt")
         `when`(mockResources.getString(R.string.ex_10_class_type_black)).thenReturn(
             BLACK_CLASS_STRING
@@ -70,251 +64,282 @@ class ExerciseOneViewModelTest {
         `when`(mockResources.getString(R.string.ex_10_class_type_silver)).thenReturn(
             SILVER_CLASS_STRING
         )
-        `when`(mockResources.getString(R.string.ex_10_class_type_unknown)).thenReturn(
-            UNKNOWN_CLASS_STRING
-        )
         viewModel = ExerciseTenViewModel(mockResources)
     }
 
-    //region Test for printInvoice - 20 case
+    //region Test for printInvoice - 16 case
     //1
     @Test
-    fun validateInvoice_Silver3k_return1Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_3K,
-            SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_silver,
-            false
-        )
-    }
-
-    //2
-    @Test
-    fun validateInvoice_Silver5k_HaveGift_return2Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_silver,
-            true
-        )
-    }
-
-    //3
-    @Test
-    fun validateInvoice_Silver5k_NotGift_return2Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_silver,
-            false
-        )
-    }
-
-    //4
-    @Test
-    fun validateInvoice_Silver10k_HaveGift_return4Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_silver,
-            true
-        )
-    }
-
-    //5
-    @Test
-    fun validateInvoice_Silver10k_NotGift_return4Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_silver,
-            false
-        )
-    }
-
-    //6
-    @Test
-    fun validateInvoice_Gold3k_return3Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_3K,
-            GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_gold,
-            false
-        )
-    }
-
-    //7
-    @Test
-    fun validateInvoice_Gold5k_HaveGift_return5Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_gold,
-            true
-        )
-    }
-
-    //8
-    @Test
-    fun validateInvoice_Gold5k_NotGift_return5Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_gold,
-            false
-        )
-    }
-
-    //9
-    @Test
-    fun validateInvoice_Gold10k_HaveGift_return10Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_gold,
-            true
-        )
-    }
-
-    //10
-    @Test
-    fun validateInvoice_Gold10k_NotGift_return10Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_gold,
-            false
-        )
-    }
-
-    //11
-    @Test
-    fun validateInvoice_Black3k_return3Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_3K,
-            BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_black,
-            false
-        )
-    }
-
-    //12
-    @Test
-    fun validateInvoice_Black5k_HaveGift_return7Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_black,
-            true
-        )
-    }
-
-    //13
-    @Test
-    fun validateInvoice_Black5k_NotGift_return7Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_black,
-            false
-        )
-    }
-
-    //14
-    @Test
-    fun validateInvoice_Black10k_HaveGift_return15Discount_Gift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_black,
-            true
-        )
-    }
-
-    //15
-    @Test
-    fun validateInvoice_Black10k_NotGift_return15Discount() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_black,
-            false
-        )
-    }
-
-    //16
-    @Test
-    fun validateInvoice_Unknown3k_returnNothing() {
-        validateCommonForInvoiceTest(
-            PAYMENT_3K,
-            UNKNOWN_CLASS_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_unknown,
-            false
-        )
-    }
-
-    //17
-    @Test
-    fun validateInvoice_Unknown5k_HaveGift_returnGift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            UNKNOWN_CLASS_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_unknown,
-            true
-        )
-    }
-
-    //18
-    @Test
-    fun validateInvoice_Unknown5k_NotGift_returnNothing() {
-        validateCommonForInvoiceTest(
-            PAYMENT_5K,
-            UNKNOWN_CLASS_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_unknown,
-            false
-        )
-    }
-
-    //19
-    @Test
-    fun validateInvoice_Unknown10k_HaveGift_returnGift() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            UNKNOWN_CLASS_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_unknown,
-            true
-        )
-    }
-
-    //20
-    @Test
-    fun validateInvoice_Unknown10k_NotGift_returnNothing() {
-        validateCommonForInvoiceTest(
-            PAYMENT_10K,
-            UNKNOWN_CLASS_DISCOUNT_PERCENT,
-            R.string.ex_10_class_type_unknown,
-            false
-        )
-    }
-
-    private fun validateCommonForInvoiceTest(
-        payment: Double,
-        discount: Double,
-        classTypeRes: Int,
-        isGift: Boolean
-    ) {
-        viewModel.updateMemberClassType(
-            mockContext.resources.getString(classTypeRes)
-        )
+    fun validateInvoice_LessSilver3k_return0Discount() {
+        val payment = 2000.0
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
         viewModel.subTotal.value = payment.toString()
         viewModel.printInvoice()
         assertEquals(
             Invoice(
                 invoiceId = 1,
                 subTotal = payment,
-                discount = payment * discount,
-                giftAccepted = isGift,
-                total = payment - payment * discount
+                discount = payment * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = payment - payment * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //2
+    @Test
+    fun validateInvoice_Silver3k_return1Discount() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_3K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_3K,
+                discount = PAYMENT_3K * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = PAYMENT_3K - PAYMENT_3K * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //3
+    @Test
+    fun validateInvoice_Silver5k_HaveGift_return2Discount_Gift() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_5K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_5K,
+                discount = PAYMENT_5K * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_5K - PAYMENT_5K * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //4
+    @Test
+    fun validateInvoice_Silver10k_HaveGift_return4Discount_Gift() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_10K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_10K,
+                discount = PAYMENT_10K * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_10K - PAYMENT_10K * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //5
+    @Test
+    fun validateInvoice_LessGold3k_return0Discount() {
+        val payment = 2000.0
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        viewModel.subTotal.value = payment.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = payment,
+                discount = payment * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = payment - payment * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //6
+    @Test
+    fun validateInvoice_Gold3k_return3Discount() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_3K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_3K,
+                discount = PAYMENT_3K * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = PAYMENT_3K - PAYMENT_3K * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //7
+    @Test
+    fun validateInvoice_Gold5k_HaveGift_return5Discount_Gift() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_5K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_5K,
+                discount = PAYMENT_5K * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_5K - PAYMENT_5K * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //8
+    @Test
+    fun validateInvoice_Gold10k_HaveGift_return10Discount_Gift() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_10K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_10K,
+                discount = PAYMENT_10K * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_10K - PAYMENT_10K * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //9
+    @Test
+    fun validateInvoice_LessBlack3k_return0Discount() {
+        val payment = 2000.0
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        viewModel.subTotal.value = payment.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = payment,
+                discount = payment * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = payment - payment * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //10
+    @Test
+    fun validateInvoice_Black3k_return3Discount() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_3K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_3K,
+                discount = PAYMENT_3K * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = PAYMENT_3K - PAYMENT_3K * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //11
+    @Test
+    fun validateInvoice_Black5k_HaveGift_return7Discount_Gift() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_5K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_5K,
+                discount = PAYMENT_5K * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_5K - PAYMENT_5K * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //12
+    @Test
+    fun validateInvoice_Black10k_HaveGift_return15Discount_Gift() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_10K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_10K,
+                discount = PAYMENT_10K * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_10K - PAYMENT_10K * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //13
+    @Test
+    fun validateInvoice_LessUnknown3k_returnNothing() {
+        val payment = 2000.0
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        viewModel.subTotal.value = payment.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = payment,
+                discount = payment * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = payment - payment * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //14
+    @Test
+    fun validateInvoice_Unknown3k_returnNothing() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_3K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_3K,
+                discount = PAYMENT_3K * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = false,
+                total = PAYMENT_3K - PAYMENT_3K * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //15
+    @Test
+    fun validateInvoice_Unknown5k_HaveGift_returnGift() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_5K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_5K,
+                discount = PAYMENT_5K * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_5K - PAYMENT_5K * UNKNOWN_CLASS_DISCOUNT_PERCENT
+            ), viewModel.invoice.value
+        )
+    }
+
+    //16
+    @Test
+    fun validateInvoice_Unknown10k_HaveGift_returnGift() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        viewModel.subTotal.value = PAYMENT_10K.toString()
+        viewModel.printInvoice()
+        assertEquals(
+            Invoice(
+                invoiceId = 1,
+                subTotal = PAYMENT_10K,
+                discount = PAYMENT_10K * UNKNOWN_CLASS_DISCOUNT_PERCENT,
+                giftAccepted = true,
+                total = PAYMENT_10K - PAYMENT_10K * UNKNOWN_CLASS_DISCOUNT_PERCENT
             ), viewModel.invoice.value
         )
     }
@@ -373,8 +398,17 @@ class ExerciseOneViewModelTest {
     }
     //endregion
 
-    //region Test for discountCalculation - 12 case
+    //region Test for discountCalculation - 16 case
     //1
+    @Test
+    fun validateDiscount_LessSilver3k_return0Discount() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        val subTotal = 2000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //2
     @Test
     fun validateDiscount_Silver3k_return1Discount() {
         viewModel.updateMemberClassType(SILVER_CLASS_STRING)
@@ -382,7 +416,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //2
+    //3
     @Test
     fun validateDiscount_Silver5k_return2Discount() {
         viewModel.updateMemberClassType(SILVER_CLASS_STRING)
@@ -390,7 +424,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //3
+    //4
     @Test
     fun validateDiscount_Silver10k_return4Discount() {
         viewModel.updateMemberClassType(SILVER_CLASS_STRING)
@@ -398,7 +432,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //4
+    //5
+    @Test
+    fun validateDiscount_LessGold3k_return0Discount() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        val subTotal = 2000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //6
     @Test
     fun validateDiscount_Gold3k_return3Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -406,7 +449,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //5
+    //7
     @Test
     fun validateDiscount_Gold5k_return5Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -414,7 +457,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //6
+    //8
     @Test
     fun validateDiscount_Gold10k_return10Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -422,7 +465,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //7
+    //9
+    @Test
+    fun validateDiscount_LessBlack3k_return0Discount() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        val subTotal = 2000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //10
     @Test
     fun validateDiscount_Black3k_return5Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -430,7 +482,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //8
+    //11
     @Test
     fun validateDiscount_Black5k_return7Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -438,7 +490,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //9
+    //12
     @Test
     fun validateDiscount_Black10k_return15Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -446,23 +498,32 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //10
+    //13
+    @Test
+    fun validateDiscount_LessUnknown3k_return0Discount() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        val subTotal = 2000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //14
     @Test
     fun validateDiscount_Unknown3k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
-        val discount = viewModel.discountCalculation(PAYMENT_10K)
+        val discount = viewModel.discountCalculation(PAYMENT_3K)
         assertEquals(discount, PAYMENT_3K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //11
+    //15
     @Test
     fun validateDiscount_Unknown5k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
-        val discount = viewModel.discountCalculation(PAYMENT_10K)
-        assertEquals(discount, PAYMENT_10K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+        val discount = viewModel.discountCalculation(PAYMENT_5K)
+        assertEquals(discount, PAYMENT_5K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //12
+    //16
     @Test
     fun validateDiscount_Unknown10k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
