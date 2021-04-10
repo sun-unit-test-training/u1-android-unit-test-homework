@@ -149,5 +149,46 @@ class HomeViewModelTest_datbt {
         Assert.assertEquals(test, HomeViewModel.Bonus.bonus_0)
     }
 
+    @Test
+    fun buyRealNotRandomBonusBlack4999() {
+        val test = homeViewModel.buy(price = 4999.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 4999.0, level = HomeViewModel.Level.black , isRandom = false)
+        Assert.assertEquals(buy.toString(), (test.value * 4999.0).toString())
+    }
+
+    @Test
+    fun buyRealRandomBonusBlack4999() {
+        val test = homeViewModel.buy(price = 4999.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 4999.0, level = HomeViewModel.Level.black , isRandom = true)
+        Assert.assertEquals(buy.toString(), (test.value * 4999.0).toString())
+    }
+
+    @Test
+    fun buyRealNotRandomBonusBlack5000() {
+        val test = homeViewModel.buy(price = 5000.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 5000.0, level = HomeViewModel.Level.black , isRandom = false)
+        Assert.assertEquals(buy.toString(), (test.value * 5000.0).toString())
+    }
+
+    @Test
+    fun buyRealRandomBonusBlack5000() {
+        val test = homeViewModel.buy(price = 5000.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 5000.0, level = HomeViewModel.Level.black , isRandom = true)
+        Assert.assertEquals(buy.toString(), (test.value * HomeViewModel.Coupon.coupon_10.value * 5000.0).toString())
+    }
+
+    @Test
+    fun buyRealNotRandomBonusBlack5001() {
+        val test = homeViewModel.buy(price = 5001.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 5001.0, level = HomeViewModel.Level.black , isRandom = false)
+        Assert.assertEquals(buy.toString(), (test.value * 5001.0).toString())
+    }
+
+    @Test
+    fun buyRealRandomBonusBlack5001() {
+        val test = homeViewModel.buy(price = 5001.0, level = HomeViewModel.Level.black)
+        val buy = homeViewModel.buyReal(price = 5001.0, level = HomeViewModel.Level.black , isRandom = true)
+        Assert.assertEquals(buy.toString(), (test.value * HomeViewModel.Coupon.coupon_10.value * 5001.0).toString())
+    }
 
 }
