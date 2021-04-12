@@ -373,28 +373,24 @@ class ExerciseTenViewModelTestNguyenVanHieuC {
     @Test
     fun validateUpdateMemberClassTypeSilver() {
         viewModel.updateMemberClassType(mockResources.getString(R.string.ex_10_class_type_silver))
-        viewModel.printInvoice()
         assertEquals(MemberClassType.SILVER_CLASS, viewModel.user.value?.classType)
     }
 
     @Test
     fun validateUpdateMemberClassTypeGold() {
         viewModel.updateMemberClassType(mockResources.getString(R.string.ex_10_class_type_gold))
-        viewModel.printInvoice()
         assertEquals(MemberClassType.GOLD_CLASS, viewModel.user.value?.classType)
     }
 
     @Test
     fun validateUpdateMemberClassTypeBlack() {
         viewModel.updateMemberClassType(mockResources.getString(R.string.ex_10_class_type_black))
-        viewModel.printInvoice()
         assertEquals(MemberClassType.BLACK_CLASS, viewModel.user.value?.classType)
     }
 
     @Test
     fun validateUpdateMemberClassTypeNoneMember() {
         viewModel.updateMemberClassType(mockResources.getString(R.string.ex_10_class_type_unknown))
-        viewModel.printInvoice()
         assertEquals(MemberClassType.UNKNOWN_CLASS, viewModel.user.value?.classType)
     }
 //endregion
