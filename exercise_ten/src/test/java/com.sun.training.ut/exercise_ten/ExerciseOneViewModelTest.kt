@@ -398,7 +398,7 @@ class ExerciseOneViewModelTest {
     }
     //endregion
 
-    //region Test for discountCalculation - 16 case
+    //region Test for discountCalculation - 28 case
     //1
     @Test
     fun validateDiscount_LessSilver3k_return0Discount() {
@@ -418,13 +418,31 @@ class ExerciseOneViewModelTest {
 
     //3
     @Test
+    fun validateDiscount_Silver3kTo5k_return1Discount() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        val subTotal = 4000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //4
+    @Test
     fun validateDiscount_Silver5k_return2Discount() {
         viewModel.updateMemberClassType(SILVER_CLASS_STRING)
         val discount = viewModel.discountCalculation(PAYMENT_5K)
         assertEquals(discount, PAYMENT_5K * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //4
+    //5
+    @Test
+    fun validateDiscount_Silver5kTo10k_return2Discount() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        val subTotal = 7000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //6
     @Test
     fun validateDiscount_Silver10k_return4Discount() {
         viewModel.updateMemberClassType(SILVER_CLASS_STRING)
@@ -432,7 +450,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //5
+    //7
+    @Test
+    fun validateDiscount_MoreSilver10k_return4Discount() {
+        viewModel.updateMemberClassType(SILVER_CLASS_STRING)
+        val subTotal = 11000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //8
     @Test
     fun validateDiscount_LessGold3k_return0Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -441,7 +468,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //6
+    //9
     @Test
     fun validateDiscount_Gold3k_return3Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -449,7 +476,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //7
+    //10
+    @Test
+    fun validateDiscount_Gold3kTo5k_return3Discount() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        val subTotal = 4000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //11
     @Test
     fun validateDiscount_Gold5k_return5Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -457,7 +493,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //8
+    //12
+    @Test
+    fun validateDiscount_Gold5kTo10k_return5Discount() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        val subTotal = 7000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //13
     @Test
     fun validateDiscount_Gold10k_return10Discount() {
         viewModel.updateMemberClassType(GOLD_CLASS_STRING)
@@ -465,7 +510,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //9
+    //14
+    @Test
+    fun validateDiscount_MoreGold10k_return10Discount() {
+        viewModel.updateMemberClassType(GOLD_CLASS_STRING)
+        val subTotal = 11000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //15
     @Test
     fun validateDiscount_LessBlack3k_return0Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -474,7 +528,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //10
+    //16
     @Test
     fun validateDiscount_Black3k_return5Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -482,7 +536,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //11
+    //17
+    @Test
+    fun validateDiscount_Black3kTo5k_return5Discount() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        val subTotal = 4000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //18
     @Test
     fun validateDiscount_Black5k_return7Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -490,7 +553,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //12
+    //19
+    @Test
+    fun validateDiscount_Black5kTo10k_return7Discount() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        val subTotal = 7000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //20
     @Test
     fun validateDiscount_Black10k_return15Discount() {
         viewModel.updateMemberClassType(BLACK_CLASS_STRING)
@@ -498,7 +570,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_10K * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
     }
 
-    //13
+    //21
+    @Test
+    fun validateDiscount_MoreBlack10k_return15Discount() {
+        viewModel.updateMemberClassType(BLACK_CLASS_STRING)
+        val subTotal = 11000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //22
     @Test
     fun validateDiscount_LessUnknown3k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
@@ -507,7 +588,7 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //14
+    //23
     @Test
     fun validateDiscount_Unknown3k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
@@ -515,7 +596,16 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_3K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //15
+    //24
+    @Test
+    fun validateDiscount_Unknown3kTo5k_return0Discount() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        val subTotal = 4000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //25
     @Test
     fun validateDiscount_Unknown5k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
@@ -523,12 +613,30 @@ class ExerciseOneViewModelTest {
         assertEquals(discount, PAYMENT_5K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
 
-    //16
+    //26
+    @Test
+    fun validateDiscount_Unknown5kTo10k_return0Discount() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        val subTotal = 7000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //27
     @Test
     fun validateDiscount_Unknown10k_return0Discount() {
         viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
         val discount = viewModel.discountCalculation(PAYMENT_10K)
         assertEquals(discount, PAYMENT_10K * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
+    }
+
+    //28
+    @Test
+    fun validateDiscount_MoreUnknown10k_return0Discount() {
+        viewModel.updateMemberClassType(UNKNOWN_CLASS_STRING)
+        val subTotal = 11000.0
+        val discount = viewModel.discountCalculation(subTotal)
+        assertEquals(discount, subTotal * UNKNOWN_CLASS_DISCOUNT_PERCENT, 0.0)
     }
     //endregion
 }
