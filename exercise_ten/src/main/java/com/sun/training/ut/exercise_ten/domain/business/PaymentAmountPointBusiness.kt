@@ -15,4 +15,7 @@ internal object PaymentAmountPointBusiness {
 
     // Payment great than or equals 10K can receive the discount percent
     const val PAYMENT_3K = 3000.0
+
+    // Payment lower than 3k can't receive the discount percent
+    const val PAYMENT_LOWER_3K = 0
 }
