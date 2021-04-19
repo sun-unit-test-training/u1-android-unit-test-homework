@@ -5,6 +5,7 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.exercise_ten.R
 import com.sun.training.ut.exercise_ten.ui.ExerciseTenViewModel
+import junit.framework.TestCase
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -15,7 +16,8 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-
+import kotlin.jvm.Throws
+import kotlin.random.Random
 
 private const val LEVEL_SILVER = "Hạng Bạc"
 private const val LEVEL_GOLD = "Hạng Vàng"
@@ -404,7 +406,72 @@ class ExerciseTenViewModelTest {
         Assert.assertEquals(11000.0, viewModel.invoice.value?.total)
     }
 
-    // Test func
-    // Pending... because im so busy :(
+    @Test
+    fun checkInvoice_SilverType_paymentAny() {
+        viewModel.updateMemberClassType(LEVEL_SILVER)
+        val payment = Random.nextDouble(Double.MAX_VALUE)
+        viewModel.subTotal.value = payment.toString()
+
+        val currentDiscount = viewModel.discountCalculation(payment)
+        val currentGiftAccepted = viewModel.giftAccepted(payment)
+
+        viewModel.printInvoice()
+        viewModel.invoice.value?.run {
+            TestCase.assertEquals(subTotal, payment)
+            TestCase.assertEquals(discount, currentDiscount)
+            TestCase.assertEquals(total, payment - currentDiscount)
+            TestCase.assertEquals(giftAccepted, currentGiftAccepted)
+        }
+    }
+
+    @Test
+    fun checkInvoice_GoldType_paymentAny() {
+        viewModel.updateMemberClassType(LEVEL_GOLD)
+        val payment = Random.nextDouble(Double.MAX_VALUE)
+        viewModel.subTotal.value = payment.toString()
+        val currentDiscount = viewModel.discountCalculation(payment)
+        val currentGiftAccepted = viewModel.giftAccepted(payment)
+
+        viewModel.printInvoice()
+        viewModel.invoice.value?.run {
+            TestCase.assertEquals(subTotal, payment)
+            TestCase.assertEquals(discount, currentDiscount)
+            TestCase.assertEquals(total, payment - currentDiscount)
+            TestCase.assertEquals(giftAccepted, currentGiftAccepted)
+        }
+    }
+
+    @Test
+    fun checkInvoice_BlackType_paymentAny() {
+        viewModel.updateMemberClassType(LEVEL_BLACK)
+        val payment = Random.nextDouble(Double.MAX_VALUE)
+        viewModel.subTotal.value = payment.toString()
+        val currentDiscount = viewModel.discountCalculation(payment)
+        val currentGiftAccepted = viewModel.giftAccepted(payment)
+
+        viewModel.printInvoice()
+        viewModel.invoice.value?.run {
+            TestCase.assertEquals(subTotal, payment)
+            TestCase.assertEquals(discount, currentDiscount)
+            TestCase.assertEquals(total, payment - currentDiscount)
+            TestCase.assertEquals(giftAccepted, currentGiftAccepted)
+        }
+    }
+
+    @Test
+    fun checkInvoice_NoneType_paymentAny() {
+        viewModel.updateMemberClassType(LEVEL_NO_MEMBER)
+        val payment = Random.nextDouble(Double.MAX_VALUE)
+        viewModel.subTotal.value = payment.toString()
+        val currentDiscount = viewModel.discountCalculation(payment)
+        val currentGiftAccepted = viewModel.giftAccepted(payment)
+        viewModel.printInvoice()
+        viewModel.invoice.value?.run {
+            TestCase.assertEquals(subTotal, payment)
+            TestCase.assertEquals(discount, currentDiscount)
+            TestCase.assertEquals(total, payment - currentDiscount)
+            TestCase.assertEquals(giftAccepted, currentGiftAccepted)
+        }
+    }
 
 }
