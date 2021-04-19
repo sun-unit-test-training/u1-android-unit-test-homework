@@ -112,6 +112,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_android_versions"
 
+    testImplementation("io.mockk:mockk:1.9.3")
+
     testImplementation "org.mockito:mockito-core:3.3.0"
     testImplementation 'android.arch.core:core-testing:1.1.1'
 
