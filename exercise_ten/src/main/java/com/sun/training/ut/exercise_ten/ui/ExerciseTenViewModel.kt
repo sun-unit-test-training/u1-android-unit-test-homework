@@ -1,76 +1,75 @@
 package com.sun.training.ut.exercise_ten.ui
 
-import android.content.res.Resources
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
-import com.example.exercise_ten.R
-import com.sun.training.ut.exercise_ten.data.model.Invoice
-import com.sun.training.ut.exercise_ten.data.model.MemberClassType
-import com.sun.training.ut.exercise_ten.data.model.User
-import com.sun.training.ut.exercise_ten.domain.business.DiscountBusiness
-import com.sun.training.ut.exercise_ten.domain.business.GiftBusiness
-import com.sun.training.ut.exercise_ten.domain.business.PaymentAmountPointBusiness
+import androidx.lifecycle.ViewModel
+import com.quanghoa.apps.lequanghoaunittestexam.model.*
 import com.sun.training.ut.exercise_ten.util.SingleLiveData
-import com.sun.training.ut.ui.base.BaseViewModel
 
-class ExerciseTenViewModel constructor(private val resources: Resources) : BaseViewModel() {
+class ExerciseTenViewModel: ViewModel() {
     val user = MutableLiveData<User>()
 
-    val invoice = SingleLiveData<Invoice>()
-    val subTotal = MutableLiveData<String>()
+    val bill = SingleLiveData<Bill>()
+
+    val totalPayment = MutableLiveData<Double>()
 
     init {
-        user.value = User(
-            userId = 1,
-            userName = resources.getString(R.string.ex_10_user_name_default),
-            classType = MemberClassType.GOLD_CLASS
-        )
+        user.value = User(userId = 1, userName = "Le Quang Hoa", classType = UserClassType.GOLD)
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun discountCalculation(subTotal: Double): Double {
+    /**
+     * calculation discount
+     */
+    fun discountCalculation(): Double {
+        val total = totalPayment.value ?: 0.0
         return user.value?.let { currentUser ->
             when {
-                currentUser.classType == MemberClassType.BLACK_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_10K -> subTotal * DiscountBusiness.BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.BLACK_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_5K -> subTotal * DiscountBusiness.BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.BLACK_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_3K -> subTotal * DiscountBusiness.BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.GOLD_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_10K -> subTotal * DiscountBusiness.GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.GOLD_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_5K -> subTotal * DiscountBusiness.GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.GOLD_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_3K -> subTotal * DiscountBusiness.GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.SILVER_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_10K -> subTotal * DiscountBusiness.SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.SILVER_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_5K -> subTotal * DiscountBusiness.SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT
-                currentUser.classType == MemberClassType.SILVER_CLASS && subTotal >= PaymentAmountPointBusiness.PAYMENT_3K -> subTotal * DiscountBusiness.SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT
-                else -> subTotal * DiscountBusiness.UNKNOWN_CLASS_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.BLACK && total >= PaymentAmount.PAYMENT_10K -> total * DiscountPercent.BLACK_CLASS_MIN_10K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.BLACK && total >= PaymentAmount.PAYMENT_5K -> total * DiscountPercent.BLACK_CLASS_MIN_5K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.BLACK && total >= PaymentAmount.PAYMENT_3K -> total * DiscountPercent.BLACK_CLASS_MIN_3K_DISCOUNT_PERCENT
+
+                currentUser.classType == UserClassType.GOLD && total >= PaymentAmount.PAYMENT_10K -> total * DiscountPercent.GOLD_CLASS_MIN_10K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.GOLD && total >= PaymentAmount.PAYMENT_5K -> total * DiscountPercent.GOLD_CLASS_MIN_5K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.GOLD && total >= PaymentAmount.PAYMENT_3K -> total * DiscountPercent.GOLD_CLASS_MIN_3K_DISCOUNT_PERCENT
+
+                currentUser.classType == UserClassType.SILVER && total >= PaymentAmount.PAYMENT_10K -> total * DiscountPercent.SILVER_CLASS_MIN_10K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.SILVER && total >= PaymentAmount.PAYMENT_5K -> total * DiscountPercent.SILVER_CLASS_MIN_5K_DISCOUNT_PERCENT
+                currentUser.classType == UserClassType.SILVER && total >= PaymentAmount.PAYMENT_3K -> total * DiscountPercent.SILVER_CLASS_MIN_3K_DISCOUNT_PERCENT
+
+                else -> total * DiscountPercent.UNKNOWN_CLASS_DISCOUNT_PERCENT
             }
         } ?: 0.0
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun giftAccepted(subTotal: Double): Boolean =
-        subTotal in GiftBusiness.GIFT_ACCEPTED_WITH_PAYMENT_EQUALS
+    fun giftAccepted(totalPayment: Double): Boolean =
+        totalPayment in Gift.GIFT_ACCEPTED_WITH_PAYMENT_EQUALS
 
-    fun printInvoice() {
-        val amount = subTotal.value?.toDoubleOrNull() ?: 0.0
-        val discount = discountCalculation(amount)
+    fun exportBill() {
+        val total = totalPayment.value ?: 0.0
 
-        invoice.value = Invoice(
-            invoiceId = 1,
-            subTotal = amount,
+        val discount = discountCalculation()
+        bill.value = Bill(
+            billId = 1,
+            payment = total,
             discount = discount,
-            giftAccepted = giftAccepted(amount),
-            total = amount - discount
+            giftAccepted = giftAccepted(total),
+            realPayment = total - discount
         )
     }
 
-    fun updateMemberClassType(type: String) {
+    fun setTotalPayment(payment: Double) {
+        this.totalPayment.value = payment
+    }
+
+    fun updateUserClassType(type: String) {
         val memberType = when (type) {
-            resources.getString(R.string.ex_10_class_type_black) -> MemberClassType.BLACK_CLASS
-            resources.getString(R.string.ex_10_class_type_gold) -> MemberClassType.GOLD_CLASS
-            resources.getString(R.string.ex_10_class_type_silver) -> MemberClassType.SILVER_CLASS
-            else -> MemberClassType.UNKNOWN_CLASS
+            UserClassType.BLACK.name -> UserClassType.BLACK
+            UserClassType.GOLD.name -> UserClassType.GOLD
+            UserClassType.SILVER.name -> UserClassType.SILVER
+            else -> UserClassType.UNKNOWN
         }
         user.value?.let { user ->
             user.classType = memberType
         }
+
     }
 }

@@ -1,10 +1,8 @@
 package com.sun.training.ut.exercise_ten
 
-import android.widget.TimePicker
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.databinding.BindingAdapter
 import com.example.exercise_ten.R
-import com.sun.training.ut.exercise_ten.data.model.MemberClassType
 
 /**
  * @{AppBinding} Created by nguyen.van.bac on 06,October,2020
